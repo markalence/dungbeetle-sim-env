@@ -1,0 +1,23 @@
+{
+  "name": "sim-env",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "three": "^0.118.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markalence/dungbeetle-sim-env.git"
+  },
+  "author": "markalence",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/markalence/dungbeetle-sim-env/issues"
+  },
+  "homepage": "https://github.com/markalence/dungbeetle-sim-env#readme"
+}
