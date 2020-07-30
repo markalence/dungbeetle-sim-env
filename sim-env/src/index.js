@@ -1,22 +1,43 @@
 import * as THREE from 'three'
+import Beetle from './Beetle'
+import DungBall from "./DungBall";
+
+let HEIGHT = window.innerHeight;
+let WIDTH = window.innerWidth;
 let scene = new THREE.Scene();
-let camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-
+let camera = new THREE.OrthographicCamera(-WIDTH / 2, WIDTH / 2, HEIGHT / 2, -HEIGHT / 2, -10, 10);
 let renderer = new THREE.WebGLRenderer();
-renderer.setSize( window.innerWidth, window.innerHeight );
-document.body.appendChild( renderer.domElement );``
+let beetle = new Beetle()
+let dungBalls = []
 
-var geometry = new THREE.BoxGeometry();
-var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-var cube = new THREE.Mesh( geometry, material );
-scene.add( cube );
 
-camera.position.z = 5;
+function ballsInit() {
+    let r = 2*Math.PI
+    let id = 0;
+    for (let i = -r; i <= r; i += Math.PI/4) {
+        dungBalls.push(new DungBall('circle', new THREE.Vector2(Math.cos(i)*300, Math.sin(i)*300), id));
+        id++;
+    }
+}
+
+function sceneInit() {
+    camera.position.z = 5;
+    scene.add(beetle.getBeetleObject());
+    renderer.setSize(WIDTH, HEIGHT);
+    document.body.appendChild(renderer.domElement);
+    document.addEventListener("keydown", beetle.moveBeetle, false);
+    ballsInit();
+    dungBalls.forEach(db => {
+        scene.add(db.getBall().toMesh())
+    })
+}
+
+
+sceneInit();
 
 function animate() {
-    requestAnimationFrame( animate );
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-    renderer.render( scene, camera );
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
 }
+
 animate();
