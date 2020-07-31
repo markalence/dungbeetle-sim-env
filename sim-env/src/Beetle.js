@@ -1,47 +1,65 @@
 import * as THREE from 'three';
-const ThreeBSP = require('three-js-csg/index')(THREE)
+import {Vector3} from "three";
+
 class Beetle {
     constructor() {
         let geometry = new THREE.CircleGeometry(25, 64);
         let material = new THREE.MeshBasicMaterial({color: 'red', transparent: true});
-        this.circle = new THREE.Mesh(geometry, material);
-        this.circle.renderOrder = 999;
-        this.circle.add(this.setFov())
+        this.beetle = new THREE.Mesh(geometry, material);
+        this.beetle.renderOrder = 999;
+        this.beetle.add(this.setFov())
+    }
+
+    setRays() {
+        let material = new THREE.LineBasicMaterial({color: 'white', transparent: true, opacity: 0.3});
+        let rays = []
+        for (let i = -5; i <= 5; i+=1) {
+            let points = []
+            points.push(new THREE.Vector3(Math.sin(i * Math.PI / 24)*300, Math.cos(i*Math.PI/24)*300));
+            points.push(new THREE.Vector3(0, 0, 0));
+            let geometry = new THREE.BufferGeometry().setFromPoints(points);
+            rays.push(new THREE.Line(geometry, material));
+        }
+        return rays
+    }
+
+    getIntersections(){
+
     }
 
     setFov() {
         let fov = new THREE.Shape();
+        let l = 300*Math.sin(Math.PI/4)
         fov.moveTo(-12.5, 0);
-        fov.lineTo(-200, 300);
-        fov.lineTo(200, 300);
+        fov.lineTo(-l,l);
+        fov.lineTo(l, l);
         fov.lineTo(12.5, 0)
         let geometry = new THREE.ShapeGeometry(fov);
-        let material = new THREE.MeshBasicMaterial({color: 'white', transparent:true, opacity: 0.3});
+        let material = new THREE.MeshBasicMaterial({color: 'white', transparent: true, opacity: 0.3});
         return new THREE.Mesh(geometry, material);
     }
 
-    setDungBalls(dungBalls){
+    setDungBalls(dungBalls) {
         this.dungBalls = dungBalls;
     }
 
     moveBeetle = (event) => {
         let keyCode = event.which;
-        console.log(this.circle)
         switch (keyCode) {
             case 37:
-                this.circle.rotation.z += 0.3;
+                this.beetle.rotation.z += 0.3;
                 break;
             case 38:
-                this.circle.translateY(5)
+                this.beetle.translateY(5)
                 break;
             case 39:
-                this.circle.rotation.z -= 0.3;
+                this.beetle.rotation.z -= 0.3;
                 break;
         }
     }
 
     getBeetleObject() {
-        return this.circle;
+        return this.beetle;
     }
 }
 

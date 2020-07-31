@@ -4,9 +4,7 @@
   "description": "",
   "main": "src/index.js",
   "dependencies": {
-    "csg": "^1.0.1",
-    "three": "^0.118.3",
-    "three-js-csg": "^72.0.0"
+    "three": "^0.118.3"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",
