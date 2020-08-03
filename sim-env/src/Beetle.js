@@ -2,6 +2,9 @@ import * as THREE from 'three';
 
 class Beetle {
     mesh;
+    keyHandler = {}
+    static AOV = Math.PI / 4; // angle of view
+    static LOV = 450; // length of view
 
     constructor() {
         let geometry = new THREE.CircleGeometry(25, 64);
@@ -14,31 +17,22 @@ class Beetle {
 
     setFov() {
         let fov = new THREE.Shape();
-        let l = 300 * Math.sin(Math.PI / 4)
-        console.log(l)
+        let x = Beetle.LOV * Math.sin(Beetle.AOV);
+        let y = Beetle.LOV * Math.cos(Beetle.AOV)
         fov.moveTo(0, 0);
-        fov.lineTo(-l, l);
-        fov.lineTo(l, l);
+        fov.lineTo(-x, y);
+        fov.lineTo(x, y);
         fov.lineTo(0, 0)
         let geometry = new THREE.ShapeGeometry(fov);
         let material = new THREE.MeshBasicMaterial({color: 'grey', transparent: true, opacity: 0.3});
         return new THREE.Mesh(geometry, material);
     }
 
-    moveBeetle = (event) => {
-        let keyCode = event.which;
-        switch (keyCode) {
-            case 37:
-                this.mesh.rotation.z += 0.1;
-                break;
-            case 38:
-                this.mesh.translateY(5)
-                break;
-            case 39:
-                this.mesh.rotation.z -= 0.1;
-                break;
-        }
+    keyDown = () => {
 
+        if (this.keyHandler[37]) this.mesh.rotation.z += 0.05;
+        if (this.keyHandler[38]) this.mesh.translateY(3);
+        if (this.keyHandler[39]) this.mesh.rotation.z -= 0.05;
 
         if (this.mesh.rotation.z < 0 && this.mesh.rotation.z < -Math.PI) {
             this.mesh.rotation.set(0, 0, this.mesh.rotation.z + 2 * Math.PI)
@@ -46,6 +40,7 @@ class Beetle {
             this.mesh.rotation.set(0, 0, this.mesh.rotation.z - 2 * Math.PI)
         }
     }
+
 
 }
 

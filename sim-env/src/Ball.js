@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-class DungBall {
+class Ball {
     mesh;
     inSight = false;
     constructor(shape, position, id) {
@@ -21,7 +21,7 @@ class DungBall {
             });
             let mat = new THREE.MeshBasicMaterial({color: 'white'});
             let num = new THREE.Mesh(textGeometry, mat);
-            num.position.set(-8, -8, 0)
+            num.position.set(-8, -9, 0)
             this.mesh.add(num);
 
         });
@@ -31,4 +31,4 @@ class DungBall {
 
 }
 
-export default DungBall
+export default Ball
