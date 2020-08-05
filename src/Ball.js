@@ -1,5 +1,5 @@
 import * as THREE from "three";
-
+import helvetica from 'three/examples/fonts/helvetiker_regular.typeface.json'
 class Ball {
     mesh;
     inSight = false;
@@ -12,7 +12,7 @@ class Ball {
         this.mesh = new THREE.Mesh(geometry, material);
         let loader = new THREE.FontLoader();
         let textGeometry;
-        loader.load('node_modules/three/examples/fonts/helvetiker_regular.typeface.json', (font) => {
+        let font = loader.parse(helvetica);
             textGeometry = new THREE.TextGeometry(this.id.toString(), {
                 font: font,
                 size: 20,
@@ -24,7 +24,6 @@ class Ball {
             num.position.set(-8, -9, 0)
             this.mesh.add(num);
 
-        });
         this.mesh.position.set(this.position.x, this.position.y, 0);
 
     }
