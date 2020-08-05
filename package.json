@@ -1,4 +1,5 @@
 {
+  "homepage": "https://markalence.github.io/dungbeetle-sim-env/",
   "name": "sim-env",
   "version": "1.0.0",
   "description": "",
@@ -12,6 +13,7 @@
     "@babel/preset-env": "^7.10.4",
     "babel-loader": "^8.1.0",
     "file-loader": "^6.0.0",
+    "gh-pages": "^3.1.0",
     "html-loader": "^1.1.0",
     "html-webpack-plugin": "^4.3.0",
     "webpack": "^4.44.0",
@@ -20,7 +22,8 @@
   },
   "scripts": {
     "build": "webpack",
-    "start:dev": "webpack-dev-server"
+    "start:dev": "webpack-dev-server",
+    "deploy": "gh-pages -d build"
   },
   "repository": {
     "type": "git",
@@ -30,6 +33,5 @@
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/markalence/dungbeetle-sim-env/issues"
-  },
-  "homepage": "https://github.com/markalence/dungbeetle-sim-env#readme"
+  }
 }
