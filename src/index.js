@@ -3,30 +3,52 @@ import Beetle from './Beetle'
 import Ball from "./Ball";
 import {Vector3} from "three";
 
-let HEIGHT = window.innerHeight;
-let WIDTH = window.innerWidth;
-let scene = new THREE.Scene();
-let camera = new THREE.OrthographicCamera(-WIDTH / 2, WIDTH / 2, HEIGHT / 2, -HEIGHT / 2, -1, 100);
-let renderer = new THREE.WebGLRenderer({antialias: true});
+const HEIGHT = window.innerHeight;
+const WIDTH = window.innerWidth;
+const scene = new THREE.Scene();
+const camera = new THREE.OrthographicCamera(-WIDTH / 2, WIDTH / 2, HEIGHT / 2, -HEIGHT / 2, -1, 100);
+const renderer = new THREE.WebGLRenderer({antialias: true});
+let initialBearing = document.getElementById('bearing');
+let bearing = 0
 let beetle = new Beetle()
 let balls = []
 let ballMeshes = []
 let visibleBalls = new Array(8).fill(0);
 
+initialBearing.addEventListener("change", e => {
+            bearing = Math.PI * initialBearing.value / 180;
+            balls.forEach(ball => {
+                scene.remove(ball.mesh)
+                ball.mesh.material.dispose();
+                ball.mesh.geometry.dispose();
+                balls = []
+            })
+            ballsInit()
+    }
+);
+
+
 function ballsInit() {
     let r = Math.PI
     let id = 0;
     for (let i = r; i > -r; i -= Math.PI / 4) {
-        balls.push(new Ball('circle', new THREE.Vector2(Math.cos(i) * 300, Math.sin(i) * 300), id));
+        balls.push(new Ball('circle',
+            new THREE.Vector2(
+                Math.cos(i - Math.PI / 2 - bearing) * 300,
+                Math.sin(i - Math.PI / 2 - bearing) * 300), id));
         id++;
     }
+    balls.forEach(db => {
+        scene.add(db.mesh)
+        ballMeshes.push(db.mesh);
+    })
 }
 
 function getIntersections() {
 
     balls.forEach(ball => {
         let dist = beetle.mesh.getWorldPosition(new Vector3()).distanceTo(ball.mesh.getWorldPosition(new Vector3()))
-        let angle = 0;
+        let angle;
         let H = beetle.mesh.clone(false).position.sub(ball.mesh.getWorldPosition(new Vector3()));
         if (Math.abs(H.x) < 0.01) {
             angle = H.y > 0 ? Math.PI / 2 : -Math.PI / 2;
@@ -60,21 +82,19 @@ function sceneInit() {
     renderer.setSize(WIDTH, HEIGHT);
     document.body.appendChild(renderer.domElement);
     renderer.setClearColor('#3f2a14', 1);
-    document.addEventListener("keydown", e => beetle.keyHandler[e.which] = true, true);
-    document.addEventListener("keyup", e => beetle.keyHandler[e.which] = false, true);
+    document.addEventListener("keydown", e => beetle.keyHandler[e.key] = true);
+    document.addEventListener("keyup", e => beetle.keyHandler[e.key] = false);
     ballsInit();
-    balls.forEach(db => {
-        scene.add(db.mesh)
-        ballMeshes.push(db.mesh);
-    })
+
 }
 
 sceneInit();
 
 function animate() {
+    if (beetle.episodeOver) return;
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
-    beetle.keyDown()
+    beetle.keyDown();
     getIntersections();
 }
 
