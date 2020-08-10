@@ -8,7 +8,7 @@ class Ball {
         this.id = id;
         this.position = position;
         let geometry = new THREE.CircleGeometry(25, 64);
-        let material = new THREE.MeshBasicMaterial({color:'green', transparent:true});
+        let material = new THREE.MeshBasicMaterial({color:'transparent', transparent:true});
         this.mesh = new THREE.Mesh(geometry, material);
         let loader = new THREE.FontLoader();
         let textGeometry;
