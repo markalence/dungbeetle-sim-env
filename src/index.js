@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import Beetle from './Beetle'
 import Ball from "./Ball";
 import {Vector3} from "three";
+import Board from "./Board";
 
 const HEIGHT = window.innerHeight;
 const WIDTH = window.innerWidth;
@@ -14,6 +15,7 @@ let beetle = new Beetle()
 let balls = []
 let ballMeshes = []
 let visibleBalls = new Array(8).fill(0);
+let board = new Board().board;
 
 initialBearing.addEventListener("input", _ => {
         bearing = Math.PI * initialBearing.value / 180;
@@ -34,7 +36,9 @@ function ballsInit() {
     //place each subsequent ball 45 degrees apart from each other.
     //each ball is then offset by the initial bearing of the beetle
     for (let i = r; i > -r; i -= Math.PI / 4) {
-        balls.push(new Ball('circle',
+        let shape;
+        shape = id % 2 === 0 ? 'sphere' : 'cone'
+        balls.push(new Ball(shape,
             new THREE.Vector2(
                 Math.cos(i - Math.PI / 2 - bearing) * 300,
                 Math.sin(i - Math.PI / 2 - bearing) * 300), id));
@@ -84,9 +88,10 @@ function getIntersections() {
 }
 
 function sceneInit() {
-    camera.zoom = 0.7;
+    camera.zoom = 0.65;
     camera.updateProjectionMatrix();
     scene.add(beetle.mesh);
+    scene.add(board)
     renderer.setSize(WIDTH, HEIGHT);
     document.body.appendChild(renderer.domElement);
     renderer.setClearColor('#3f2a14', 1);

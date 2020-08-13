@@ -20,8 +20,8 @@ class Beetle {
         this.episodeOver = false;
         this.episodeStarted = false;
         this.mesh = new THREE.Mesh(geometry, material);
-        this.mesh.renderOrder = 999;
         this.mesh.add(this.setFov())
+        this.mesh.renderOrder = 999;
         this.startTime = null;
     }
 
@@ -41,8 +41,10 @@ class Beetle {
         fov.lineTo(x, y);
         fov.lineTo(0, 0)
         let geometry = new THREE.ShapeGeometry(fov);
-        let material = new THREE.MeshBasicMaterial({color: 'grey', transparent: true, opacity: 0.3});
-        return new THREE.Mesh(geometry, material);
+        let material = new THREE.MeshBasicMaterial({color: 'grey', transparent: true, opacity: 0.5});
+        let mesh = new THREE.Mesh(geometry,material);
+        mesh.renderOrder = 999;
+        return mesh;
     }
 
     writeFile() {
