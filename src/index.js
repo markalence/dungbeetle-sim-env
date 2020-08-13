@@ -9,16 +9,18 @@ const WIDTH = window.innerWidth;
 const scene = new THREE.Scene();
 const camera = new THREE.OrthographicCamera(-WIDTH / 2, WIDTH / 2, HEIGHT / 2, -HEIGHT / 2, -1, 100);
 const renderer = new THREE.WebGLRenderer({antialias: true});
+
 let initialBearing = document.getElementById('bearing');
 let bearing = 0
 let beetle = new Beetle()
 let balls = []
 let ballMeshes = []
+let ballShapes = []
 let visibleBalls = new Array(8).fill(0);
 let board = new Board().board;
 
 initialBearing.addEventListener("input", _ => {
-        bearing = Math.PI * initialBearing.value / 180;
+        bearing = -Math.PI * initialBearing.value / 180;
         beetle.mesh.rotation.z = bearing;
         camera.rotation.z = bearing;
         balls.forEach(ball => ball.mesh.rotation.z = bearing);
@@ -37,14 +39,15 @@ function ballsInit() {
     //each ball is then offset by the initial bearing of the beetle
     for (let i = r; i > -r; i -= Math.PI / 4) {
         let shape;
-        shape = id % 2 === 0 ? 'sphere' : 'cone'
+        shape = id % 2 === 0 ? 'sphere' : 'inc'
+        ballShapes.push(shape);
         balls.push(new Ball(shape,
             new THREE.Vector2(
                 Math.cos(i - Math.PI / 2 - bearing) * 300,
                 Math.sin(i - Math.PI / 2 - bearing) * 300), id));
         id++;
     }
-
+    beetle.setBallShapes(ballShapes);
     balls.forEach(db => {
         scene.add(db.mesh)
         ballMeshes.push(db.mesh);
@@ -63,7 +66,7 @@ function getIntersections() {
         //set the angle between them to be 90 (if ball above beetle) or -90 (if ball below beetle)
         if (Math.abs(H.x) < 0.01) angle = H.y > 0 ? Math.PI / 2 : -Math.PI / 2;
 
-        //if ball and beetle have similar y values,
+            //if ball and beetle have similar y values,
         //set the angle between them to be 0 (if ball left of beetle) or 180 (if ball right of beetle)
         else if (Math.abs(H.y) < 0.01) angle = H.x > 0 ? 0 : Math.PI;
         else angle = Math.atan2(H.y, H.x);
@@ -79,11 +82,14 @@ function getIntersections() {
         //if the ball lies in the field of view triangle, it is visible to the beetle
         if ((Math.abs(angle) < Beetle.AOV + 0.01) && dist <= 25 + Beetle.LOV * Math.cos(Beetle.AOV) / Math.cos(angle)) {
             ball.mesh.material.color.setHex(0xA9A9A9);
-            visibleBalls[ball.id] = 1;
+            visibleBalls[ball.id] = {visible: true, distance: dist};
         } else {
             ball.mesh.material.color.setHex(0x000);
-            visibleBalls[ball.id] = 0;
+            visibleBalls[ball.id] = {visible: false, distance: dist};
         }
+
+        //if beetle touches ball, the episode is over
+        if (dist < 50.05) {beetle.episodeOver = true}
     })
 }
 
@@ -97,14 +103,19 @@ function sceneInit() {
     renderer.setClearColor('#3f2a14', 1);
     document.addEventListener("keydown", e => beetle.keyHandler[e.key] = true);
     document.addEventListener("keyup", e => beetle.keyHandler[e.key] = false);
+    document.addEventListener("keydown", e => {
+        if (e.key === 'r') {
+            beetle.mesh.position.set(0, 0, 0);
+            beetle.mesh.rotation.set(0, 0, bearing);
+            beetle.reset();
+        }
+    });
     ballsInit();
-
 }
 
 sceneInit();
 
 function animate() {
-    if (beetle.episodeOver) return;
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
     beetle.moveBeetle(visibleBalls);

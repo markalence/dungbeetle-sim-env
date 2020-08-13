@@ -22,7 +22,6 @@ class Board {
             });
             let mat = new THREE.MeshBasicMaterial({color: 'white'});
             this.text = new THREE.Mesh(textGeometry, mat);
-
             this.text.rotation.z = -Math.PI * (i) / 180;
             this.text.position.set(-Math.cos(Math.PI * (i + 90) / 180) * 420, Math.sin(Math.PI * (i + 90) / 180) * 420, 0);
             this.board.add(this.text);
