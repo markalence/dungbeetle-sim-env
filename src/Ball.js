@@ -10,7 +10,7 @@ class Ball {
         this.text = null;
 
         let geometry = new THREE.CircleGeometry(25, 64);
-        let material = new THREE.MeshBasicMaterial({color:'transparent', transparent:true});
+        let material = new THREE.MeshBasicMaterial({color:'black', transparent:true});
         this.mesh = new THREE.Mesh(geometry, material);
         let loader = new THREE.FontLoader();
         let textGeometry;

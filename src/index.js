@@ -57,27 +57,20 @@ function getIntersections() {
 
         //if the ball and the beetle have similar x values,
         //set the angle between them to be 90 (if ball above beetle) or -90 (if ball below beetle)
-        if (Math.abs(H.x) < 0.01) {
-            angle = H.y > 0 ? Math.PI / 2 : -Math.PI / 2;
-        }
-            //if ball and beetle have similar y values,
+        if (Math.abs(H.x) < 0.01) angle = H.y > 0 ? Math.PI / 2 : -Math.PI / 2;
+
+        //if ball and beetle have similar y values,
         //set the angle between them to be 0 (if ball left of beetle) or 180 (if ball right of beetle)
-        else if (Math.abs(H.y) < 0.01) {
-            angle = H.x > 0 ? 0 : Math.PI;
-        } else {
-            angle = Math.atan2(H.y, H.x);
-        }
+        else if (Math.abs(H.y) < 0.01) angle = H.x > 0 ? 0 : Math.PI;
+        else angle = Math.atan2(H.y, H.x);
 
         //correct the angle by adjusting for initial offset of balls (90 deg)
         //and by rotation of beetle
         angle -= Math.PI / 2 + beetle.mesh.rotation.z
 
         //ensure angle is between {0 and PI} or {-PI and 0}
-        if (angle < 0 && angle < -Math.PI) {
-            angle += 2 * Math.PI;
-        } else if (angle > 0 && angle > Math.PI) {
-            angle -= 2 * Math.PI;
-        }
+        if (angle < -Math.PI) angle += 2 * Math.PI;
+        else if (angle > 0 && angle > Math.PI) angle -= 2 * Math.PI;
 
         //if the ball lies in the field of view triangle, it is visible to the beetle
         if ((Math.abs(angle) < Beetle.AOV + 0.01) && dist <= 25 + Beetle.LOV * Math.cos(Beetle.AOV) / Math.cos(angle)) {
@@ -109,7 +102,7 @@ function animate() {
     if (beetle.episodeOver) return;
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
-    beetle.moveBeetle();
+    beetle.moveBeetle(visibleBalls);
     getIntersections();
 }
 
