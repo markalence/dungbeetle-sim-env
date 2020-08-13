@@ -15,15 +15,11 @@ let balls = []
 let ballMeshes = []
 let visibleBalls = new Array(8).fill(0);
 
-initialBearing.addEventListener("input", e => {
-            bearing = Math.PI * initialBearing.value / 180;
-            balls.forEach(ball => {
-                scene.remove(ball.mesh)
-                ball.mesh.material.dispose();
-                ball.mesh.geometry.dispose();
-                balls = []
-            })
-            ballsInit()
+initialBearing.addEventListener("input", _ => {
+        bearing = Math.PI * initialBearing.value / 180;
+        beetle.mesh.rotation.z = bearing;
+        camera.rotation.z = bearing;
+        balls.forEach(ball => ball.mesh.rotation.z = bearing);
     }
 );
 
@@ -64,7 +60,7 @@ function getIntersections() {
         if (Math.abs(H.x) < 0.01) {
             angle = H.y > 0 ? Math.PI / 2 : -Math.PI / 2;
         }
-        //if ball and beetle have similar y values,
+            //if ball and beetle have similar y values,
         //set the angle between them to be 0 (if ball left of beetle) or 180 (if ball right of beetle)
         else if (Math.abs(H.y) < 0.01) {
             angle = H.x > 0 ? 0 : Math.PI;
@@ -74,7 +70,7 @@ function getIntersections() {
 
         //correct the angle by adjusting for initial offset of balls (90 deg)
         //and by rotation of beetle
-        angle -= Math.PI/2 + beetle.mesh.rotation.z
+        angle -= Math.PI / 2 + beetle.mesh.rotation.z
 
         //ensure angle is between {0 and PI} or {-PI and 0}
         if (angle < 0 && angle < -Math.PI) {

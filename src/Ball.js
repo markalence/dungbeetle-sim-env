@@ -7,6 +7,8 @@ class Ball {
         this.shape = shape;
         this.id = id;
         this.position = position;
+        this.text = null;
+
         let geometry = new THREE.CircleGeometry(25, 64);
         let material = new THREE.MeshBasicMaterial({color:'transparent', transparent:true});
         this.mesh = new THREE.Mesh(geometry, material);
@@ -20,9 +22,9 @@ class Ball {
                 curveSegments: 100
             });
             let mat = new THREE.MeshBasicMaterial({color: 'white'});
-            let num = new THREE.Mesh(textGeometry, mat);
-            num.position.set(-8, -9, 0)
-            this.mesh.add(num);
+            this.text = new THREE.Mesh(textGeometry, mat);
+            this.text.position.set(-8.5, -9, 0)
+            this.mesh.add(this.text);
 
         this.mesh.position.set(this.position.x, this.position.y, 0);
 
