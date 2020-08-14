@@ -11,21 +11,30 @@ const camera = new THREE.OrthographicCamera(-WIDTH / 2, WIDTH / 2, HEIGHT / 2, -
 const renderer = new THREE.WebGLRenderer({antialias: true});
 
 let initialBearing = document.getElementById('bearing');
-let bearing = 0
+let randomBall = document.getElementById('ball');
+let bearing = 0;
+let offset = 0
 let beetle = new Beetle()
 let balls = []
 let ballMeshes = []
 let ballShapes = []
 let visibleBalls = new Array(8).fill(0);
-let board = new Board().board;
+let board = new Board();
 
-initialBearing.addEventListener("input", _ => {
-        bearing = -Math.PI * initialBearing.value / 180;
-        beetle.mesh.rotation.z = bearing;
-        camera.rotation.z = bearing;
-        balls.forEach(ball => ball.mesh.rotation.z = bearing);
-    }
-);
+
+function rotateBoard() {
+    bearing = -Math.PI * (initialBearing.value - offset) / 180;
+    board.mesh.rotation.z = bearing;
+    balls.forEach(ball => ball.mesh.rotation.z = -bearing);
+}
+
+initialBearing.addEventListener("input", _ => rotateBoard());
+
+randomBall.addEventListener("input", ballNum => {
+    offset = (ballNum.target.value - 1) * 45;
+    bearing = initialBearing.value;
+    rotateBoard();
+})
 
 /**
  * Initialise position of dung balls in the scene
@@ -49,7 +58,7 @@ function ballsInit() {
     }
     beetle.setBallShapes(ballShapes);
     balls.forEach(db => {
-        scene.add(db.mesh)
+        board.mesh.add(db.mesh)
         ballMeshes.push(db.mesh);
     })
 }
@@ -89,24 +98,29 @@ function getIntersections() {
         }
 
         //if beetle touches ball, the episode is over
-        if (dist < 50.05) {beetle.episodeOver = true}
+        if (dist < 50.05) {
+            beetle.episodeOver = true
+        }
     })
 }
 
 function sceneInit() {
     camera.zoom = 0.65;
     camera.updateProjectionMatrix();
+    scene.add(board.mesh);
     scene.add(beetle.mesh);
-    scene.add(board)
+    board.markers.forEach(mark => scene.add(mark));
     renderer.setSize(WIDTH, HEIGHT);
     document.body.appendChild(renderer.domElement);
     renderer.setClearColor('#3f2a14', 1);
     document.addEventListener("keydown", e => beetle.keyHandler[e.key] = true);
     document.addEventListener("keyup", e => beetle.keyHandler[e.key] = false);
+
+    //if r key is pressed, reset the beetle rotation and position. episode starts afresh
     document.addEventListener("keydown", e => {
         if (e.key === 'r') {
             beetle.mesh.position.set(0, 0, 0);
-            beetle.mesh.rotation.set(0, 0, bearing);
+            beetle.mesh.rotation.z = 0;
             beetle.reset();
         }
     });

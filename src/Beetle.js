@@ -3,7 +3,6 @@ import * as fs from 'file-saver'
 import {Vector3} from "three";
 
 let demonstrationId = document.getElementById('filename');
-let initialBearing = document.getElementById('bearing');
 
 
 class Beetle {
@@ -113,11 +112,6 @@ class Beetle {
         if (this.keyHandler[' ']) {
             this.writeFile();
         }
-    }
-
-    clearData(){
-        this.groundTruth = [];
-        th
     }
 
     setBallShapes(ballShapes){

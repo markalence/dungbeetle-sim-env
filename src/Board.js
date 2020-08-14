@@ -1,14 +1,16 @@
 import * as THREE from 'three'
 import helvetica from 'three/examples/fonts/helvetiker_regular.typeface.json'
+import {Vector3} from "three";
 
 class Board {
-
+    markers;
     constructor() {
         let geometry = new THREE.CircleGeometry(400, 64);
         let material = new THREE.MeshBasicMaterial({color: 0x855E42, transparent: true})
-        this.board = new THREE.Mesh(geometry, material);
-        this.board.renderOrder = 0
+        this.mesh = new THREE.Mesh(geometry, material);
+        this.mesh.renderOrder = 0
         let loader = new THREE.FontLoader();
+        this.markers = []
         for (let i = 0; i < 360; i += 10) {
             let textGeometry;
             let font = loader.parse(helvetica);
@@ -24,7 +26,10 @@ class Board {
             this.text = new THREE.Mesh(textGeometry, mat);
             this.text.rotation.z = -Math.PI * (i) / 180;
             this.text.position.set(-Math.cos(Math.PI * (i + 90) / 180) * 420, Math.sin(Math.PI * (i + 90) / 180) * 420, 0);
-            this.board.add(this.text);
+            textGeometry.computeBoundingBox();
+            let center = new Vector3();
+            textGeometry.boundingBox.getCenter(center);
+            this.markers.push(this.text);
         }
     }
 }

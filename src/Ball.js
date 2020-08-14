@@ -70,17 +70,6 @@ class Ball {
         this.text.position.set(-center.x, -center.y, 0);
         this.mesh.add(this.text);
 
-        font = loader.parse(helvetica);
-        textGeometry = new THREE.TextGeometry(this.shape, {
-            font: font,
-            size: 15,
-            height: 1,
-            curveSegments: 100
-        });
-        mat = new THREE.MeshBasicMaterial({color: 'white'});
-        this.text = new THREE.Mesh(textGeometry, mat);
-        this.text.position.set(-5.5 * this.shape.length, 35, 0)
-        this.mesh.add(this.text);
         this.mesh.position.set(this.position.x, this.position.y, 0);
 
     }
