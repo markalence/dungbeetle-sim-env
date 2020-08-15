@@ -36,4 +36,22 @@ class Board {
     }
 }
 
-export default Board;
+class Status{
+    text;
+    constructor(status) {
+        let loader = new THREE.FontLoader();
+        let textGeometry;
+        let font = loader.parse(helvetica);
+        textGeometry = new THREE.TextGeometry(status, {
+            font: font,
+            size: 30,
+            height: 1,
+            curveSegments: 2
+        });
+        let mat = new THREE.MeshBasicMaterial({color: 'white'});
+        this.text = new THREE.Mesh(textGeometry, mat);
+        this.text.position.set(0.35*window.innerWidth, 0.48*window.innerHeight, 0);
+    }
+}
+
+export {Board, Status};

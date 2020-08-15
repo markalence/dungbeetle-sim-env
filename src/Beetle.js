@@ -19,9 +19,9 @@ class Beetle {
         this.keyHandler = {'ArrowUp': false, 'ArrowLeft': false, 'ArrowRight': false};
         this.stateActionPairs = [];
         this.groundTruth = [];
+        this.frame = 0;
         this.episodeOver = false;
         this.episodeStarted = false;
-        this.startTime = null;
         this.fileWritten = false;
     }
 
@@ -77,9 +77,9 @@ class Beetle {
     moveBeetle() {
         if (this.fileWritten) return;
         if (!this.episodeOver) {
-            if (this.keyHandler['ArrowLeft']) this.mesh.rotation.z += 0.05;
-            if (this.keyHandler['ArrowUp']) this.mesh.translateY(3);
-            if (this.keyHandler['ArrowRight']) this.mesh.rotation.z -= 0.05;
+            if (this.keyHandler['ArrowLeft']) this.mesh.rotation.z += 0.03;
+            if (this.keyHandler['ArrowUp']) this.mesh.translateY(1);
+            if (this.keyHandler['ArrowRight']) this.mesh.rotation.z -= 0.03;
 
             //delete all key entries in keyHandler that are not left, right, or up
             Object.keys(this.keyHandler).forEach(key => {
@@ -88,7 +88,6 @@ class Beetle {
                     //start episode on first key press
                     if (!this.episodeStarted && this.keyHandler[key]) {
                         this.episodeStarted = true;
-                        this.startTime = Date.now();
                     }
                 }
             })
@@ -98,7 +97,7 @@ class Beetle {
                 this.groundTruth.push(JSON.stringify({
                     position: this.mesh.getWorldPosition(new Vector3()),
                     rotation: this.mesh.rotation.z,
-                    time: Date.now() - this.startTime,
+                    frame: this.frame++,
                 }) + '\n');
 
                 //save state and action
@@ -113,7 +112,7 @@ class Beetle {
             if (this.mesh.rotation.z < -Math.PI) this.mesh.rotation.z += 2 * Math.PI;
             else if (this.mesh.rotation.z > Math.PI) this.mesh.rotation.z -= 2 * Math.PI;
         }
-        if (this.keyHandler[' ']) {
+        if (this.keyHandler['d']) {
             this.writeFile();
         }
     }

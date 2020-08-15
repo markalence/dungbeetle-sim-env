@@ -19,7 +19,7 @@ class Ball {
                 geometry = new THREE.CircleGeometry(this.radius, 64);
                 break;
             case 'cyla':
-                this.radius = 18.6;
+                this.radius = 18.6*global.RATIO;
                 geometry = new THREE.CircleGeometry(this.radius, 64);
                 break;
             case 'cylb':
@@ -65,8 +65,8 @@ class Ball {
         }
         let material = new THREE.MeshBasicMaterial({color: 'black', transparent: true});
         this.mesh = new THREE.Mesh(geometry, material);
-        let loader = new THREE.FontLoader();
 
+        let loader = new THREE.FontLoader();
         let textGeometry;
         let font = loader.parse(helvetica);
         textGeometry = new THREE.TextGeometry((this.id + 1).toString(), {
@@ -99,5 +99,6 @@ class Ball {
 
     }
 }
+
 
 export default Ball

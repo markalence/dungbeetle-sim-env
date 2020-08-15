@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 import Beetle from './Beetle'
 import Ball from "./Ball";
-import Board from "./Board";
+import {Board, Status} from "./Board";
 
-global.RATIO = 25/21; //ratio between screen size and actual size
+global.RATIO = 25 / 21; //ratio between screen size and actual size
 const HEIGHT = window.innerHeight;
 const WIDTH = window.innerWidth;
 const scene = new THREE.Scene();
@@ -12,6 +12,10 @@ const renderer = new THREE.WebGLRenderer({antialias: true});
 let initialBearing = document.getElementById('bearing');
 let randomBall = document.getElementById('ball');
 let experiment = document.getElementById('experiment');
+let paused = false;
+let PLAY = new Status('RECORDING').text;
+let PAUSE = new Status('PAUSED').text;
+PAUSE.visible = false;
 let shapeA = 'sphere'
 let shapeB = 'sphere'
 let offset = 0
@@ -28,7 +32,6 @@ function rotateBoard() {
 
 initialBearing.addEventListener("input", _ => rotateBoard());
 randomBall.addEventListener("input", _ => rotateBoard())
-
 experiment.addEventListener("input", _ => {
     //change the shape of each ball depending on which experiment is being run
     switch (+experiment.value) {
@@ -74,6 +77,22 @@ experiment.addEventListener("input", _ => {
     rotateBoard();
 })
 
+document.addEventListener("keydown", e => beetle.keyHandler[e.key] = true);
+document.addEventListener("keyup", e => beetle.keyHandler[e.key] = false);
+
+//if r key is pressed, reset the beetle rotation and position. episode starts afresh
+document.addEventListener("keydown", e => {
+    if (e.key === 'r') {
+        beetle.mesh.position.set(0, 0, 0);
+        beetle.mesh.rotation.z = 0;
+        beetle.reset();
+    } else if (e.key === ' ') {
+        paused = !paused
+        PLAY.visible = !paused;
+        PAUSE.visible = paused;
+    }
+});
+
 /**
  * Initialise position of dung balls in the scene
  */
@@ -88,8 +107,8 @@ function ballsInit(shapeA, shapeB) {
         beetle.ballShapes[id] = shape;
         beetle.balls[id] = new Ball(shape,
             new THREE.Vector2(
-                Math.cos(i - Math.PI / 2) * RATIO*145,
-                Math.sin(i - Math.PI / 2) * RATIO*145), id);
+                Math.cos(i - Math.PI / 2) * RATIO * 145,
+                Math.sin(i - Math.PI / 2) * RATIO * 145), id);
         id++;
     }
     beetle.balls.forEach(db => board.mesh.add(db.mesh));
@@ -101,29 +120,23 @@ function sceneInit() {
     camera.updateProjectionMatrix();
     scene.add(board.mesh);
     scene.add(beetle.mesh);
+    scene.add(PAUSE);
+    scene.add(PLAY);
     board.markers.forEach(mark => scene.add(mark));
     renderer.setSize(WIDTH, HEIGHT);
     document.body.appendChild(renderer.domElement);
     renderer.setClearColor('#3f2a14', 1);
-    document.addEventListener("keydown", e => beetle.keyHandler[e.key] = true);
-    document.addEventListener("keyup", e => beetle.keyHandler[e.key] = false);
 
-    //if r key is pressed, reset the beetle rotation and position. episode starts afresh
-    document.addEventListener("keydown", e => {
-        if (e.key === 'r') {
-            beetle.mesh.position.set(0, 0, 0);
-            beetle.mesh.rotation.z = 0;
-            beetle.reset();
-        }
-    });
     ballsInit(shapeA, shapeB);
 }
 
 sceneInit();
 
 function animate() {
+
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
+    if (paused) return;
     beetle.getIntersections();
     beetle.moveBeetle();
 }
