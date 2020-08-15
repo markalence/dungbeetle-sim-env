@@ -15,8 +15,8 @@ class Beetle {
     static AOV = Math.PI / 4; // angle of view
     static LOV = 450; // length of view
 
-    reset(){
-        this.keyHandler =  {'ArrowUp': false, 'ArrowLeft': false, 'ArrowRight': false};
+    reset() {
+        this.keyHandler = {'ArrowUp': false, 'ArrowLeft': false, 'ArrowRight': false};
         this.stateActionPairs = [];
         this.groundTruth = [];
         this.episodeOver = false;
@@ -51,7 +51,7 @@ class Beetle {
         fov.lineTo(0, 0)
         let geometry = new THREE.ShapeGeometry(fov);
         let material = new THREE.MeshBasicMaterial({color: 'grey', transparent: true, opacity: 0.5});
-        let mesh = new THREE.Mesh(geometry,material);
+        let mesh = new THREE.Mesh(geometry, material);
         mesh.renderOrder = 998;
         return mesh;
     }
@@ -76,7 +76,7 @@ class Beetle {
      */
     moveBeetle() {
         if (this.fileWritten) return;
-        if(!this.episodeOver) {
+        if (!this.episodeOver) {
             if (this.keyHandler['ArrowLeft']) this.mesh.rotation.z += 0.05;
             if (this.keyHandler['ArrowUp']) this.mesh.translateY(3);
             if (this.keyHandler['ArrowRight']) this.mesh.rotation.z -= 0.05;
@@ -156,7 +156,7 @@ class Beetle {
             }
 
             //if beetle touches ball, the episode is over
-            if (dist < 50.05) {
+            if (dist < 25 + ball.radius) {
                 this.episodeOver = true
             }
         })

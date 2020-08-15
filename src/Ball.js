@@ -6,24 +6,39 @@ const RATIO = 25 / 21;
 
 class Ball {
     mesh;
-    inSight = false;
 
     constructor(shape, position, id) {
         this.shape = shape;
         this.id = id;
         this.position = position;
         this.text = null;
+        this.radius = 0;
         let geometry;
         let [v1, v2, v3] = [new Vector3(), new Vector3(), new Vector3()];
         switch (shape) {
             case 'sphere':
-                geometry = new THREE.CircleGeometry(21*RATIO, 64);
+                this.radius = 21 * RATIO;
+                geometry = new THREE.CircleGeometry(this.radius, 64);
+                break;
+            case 'cyla':
+                this.radius = 18.6;
+                geometry = new THREE.CircleGeometry(this.radius, 64);
                 break;
             case 'cylb':
-                geometry = new THREE.CircleGeometry(22.5*RATIO);
+                this.radius = 22.5 * RATIO;
+                geometry = new THREE.CircleGeometry(this.radius, 64);
                 break;
             case 'cylc':
-                geometry = new THREE.CircleGeometry(16.5*RATIO);
+                this.radius = 21 * RATIO;
+                geometry = new THREE.CircleGeometry(this.radius, 64);
+                break;
+            case 'cyld':
+                this.radius = 16.5 * RATIO;
+                geometry = new THREE.CircleGeometry(this.radius, 64);
+                break;
+            case 'cyle':
+                this.radius = 10.5 * RATIO;
+                geometry = new THREE.CircleGeometry(this.radius, 64);
                 break;
             case 'uwc':
                 geometry = new THREE.Geometry();
@@ -35,17 +50,17 @@ class Ball {
                 break;
             case 'iwc':
                 geometry = new THREE.Geometry()
-                v1.set(-33*RATIO, 21*RATIO, 0);
-                v2.set(33*RATIO, 21*RATIO, 0);
-                v3.set(0, -21*RATIO, 0);
+                v1.set(-33 * RATIO, 21 * RATIO, 0);
+                v2.set(33 * RATIO, 21 * RATIO, 0);
+                v3.set(0, -21 * RATIO, 0);
                 [v1, v2, v3].forEach(v => geometry.vertices.push(v));
                 geometry.faces.push(new THREE.Face3(0, 2, 1));
                 break;
             case 'inc':
                 geometry = new THREE.Geometry()
-                v1.set(-21*RATIO, (33-8)*RATIO,0);
-                v2.set(21*RATIO, (33-8)*RATIO,0);
-                v3.set(0, -(33+8)*RATIO,0);
+                v1.set(-21 * RATIO, (33 - 8) * RATIO, 0);
+                v2.set(21 * RATIO, (33 - 8) * RATIO, 0);
+                v3.set(0, -(33 + 8) * RATIO, 0);
                 [v1, v2, v3].forEach(v => geometry.vertices.push(v));
                 geometry.faces.push(new THREE.Face3(0, 2, 1));
                 break;

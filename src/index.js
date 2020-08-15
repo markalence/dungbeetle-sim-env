@@ -10,20 +10,19 @@ const camera = new THREE.OrthographicCamera(-WIDTH / 2, WIDTH / 2, HEIGHT / 2, -
 const renderer = new THREE.WebGLRenderer({antialias: true});
 let initialBearing = document.getElementById('bearing');
 let randomBall = document.getElementById('ball');
+let experiment = document.getElementById('experiment');
+let shapeA = 'sphere'
+let shapeB = 'sphere'
 let bearing = 0;
 let offset = 0
 let beetle = new Beetle()
-let balls = []
-let ballMeshes = []
-let ballShapes = []
-let visibleBalls = new Array(8).fill(0);
 let board = new Board();
 
 
 function rotateBoard() {
     bearing = -Math.PI * (initialBearing.value - offset) / 180;
     board.mesh.rotation.z = bearing;
-    balls.forEach(ball => ball.mesh.rotation.z = -bearing);
+    beetle.balls.forEach(ball => ball.mesh.rotation.z = -bearing);
 }
 
 initialBearing.addEventListener("input", _ => rotateBoard());
@@ -32,6 +31,51 @@ randomBall.addEventListener("input", ballNum => {
     offset = (ballNum.target.value - 1) * 45;
     bearing = initialBearing.value;
     rotateBoard();
+})
+
+experiment.addEventListener("input", num => {
+    switch (+experiment.value) {
+        case 3:
+            shapeA = 'sphere';
+            shapeB = 'cyla';
+            break;
+        case 4:
+            shapeA = 'sphere';
+            shapeB = 'uwc';
+            break;
+        case 5:
+            shapeA = 'uwc';
+            shapeB = 'iwc';
+            break;
+        case 6:
+            shapeA = 'uwc';
+            shapeB = 'inc';
+            break;
+        case 9:
+            shapeA = 'cylc';
+            shapeB = 'cyle';
+            break;
+        case 10:
+            shapeA = 'cyld';
+            shapeB = 'cyle';
+            break;
+        case 11:
+            shapeA = 'cylb';
+            shapeB = 'cyld';
+            break;
+        case 12:
+            shapeA = 'cylc';
+            shapeB = 'cyld';
+            break;
+    }
+    beetle.balls.forEach(ball => {
+        board.mesh.remove(ball.mesh);
+        ball.mesh.geometry.dispose();
+        ball.mesh.material.dispose();
+    });
+    beetle.balls = [];
+    beetle.ballShapes = [];
+    ballsInit();
 })
 
 /**
@@ -46,21 +90,16 @@ function ballsInit() {
     //each ball is then offset by the initial bearing of the beetle
     for (let i = r; i > -r; i -= Math.PI / 4) {
         let shape;
-        shape = id % 2 === 0 ? 'sphere' : 'inc'
-        ballShapes.push(shape);
-        balls.push(new Ball(shape,
+        shape = id % 2 === 0 ? shapeA : shapeB
+        console.log(shape)
+        beetle.ballShapes.push(shape);
+        beetle.balls.push(new Ball(shape,
             new THREE.Vector2(
                 Math.cos(i - Math.PI / 2 - bearing) * 300,
                 Math.sin(i - Math.PI / 2 - bearing) * 300), id));
         id++;
     }
-
-    beetle.balls = balls;
-    beetle.ballShapes = ballShapes;
-    balls.forEach(db => {
-        board.mesh.add(db.mesh)
-        ballMeshes.push(db.mesh);
-    })
+    beetle.balls.forEach(db => board.mesh.add(db.mesh))
 }
 
 
@@ -93,7 +132,7 @@ function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
     beetle.getIntersections();
-    beetle.moveBeetle(visibleBalls);
+    beetle.moveBeetle();
 }
 
 animate();
