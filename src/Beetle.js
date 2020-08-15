@@ -27,7 +27,7 @@ class Beetle {
 
     constructor() {
         this.reset();
-        let geometry = new THREE.CircleGeometry(25, 64);
+        let geometry = new THREE.CircleGeometry(20, 64);
         let material = new THREE.MeshBasicMaterial({color: 'red', transparent: true});
         this.mesh = new THREE.Mesh(geometry, material);
         this.mesh.add(this.setFov())
@@ -66,7 +66,7 @@ class Beetle {
         })
         let stateActionBlob = new Blob(this.stateActionPairs, {type: 'application/json'});
         let groundTruthBlob = new Blob(this.groundTruth, {type: 'application/json'});
-        fs.saveAs(stateActionBlob, demonstrationId.value + '_states&actions' + '.txt');
+        fs.saveAs(stateActionBlob, demonstrationId.value + '_sa' + '.txt');
         fs.saveAs(groundTruthBlob, demonstrationId.value + '_truth' + '.txt');
         this.fileWritten = true;
     }
@@ -156,7 +156,7 @@ class Beetle {
             }
 
             //if beetle touches ball, the episode is over
-            if (dist < 25 + ball.radius) {
+            if (dist < 20 + ball.radius) {
                 this.episodeOver = true
             }
         })

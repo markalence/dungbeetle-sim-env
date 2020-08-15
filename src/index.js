@@ -3,6 +3,7 @@ import Beetle from './Beetle'
 import Ball from "./Ball";
 import Board from "./Board";
 
+global.RATIO = 25/21; //ratio between screen size and actual size
 const HEIGHT = window.innerHeight;
 const WIDTH = window.innerWidth;
 const scene = new THREE.Scene();
@@ -13,27 +14,23 @@ let randomBall = document.getElementById('ball');
 let experiment = document.getElementById('experiment');
 let shapeA = 'sphere'
 let shapeB = 'sphere'
-let bearing = 0;
 let offset = 0
 let beetle = new Beetle()
 let board = new Board();
 
 
 function rotateBoard() {
-    bearing = -Math.PI * (initialBearing.value - offset) / 180;
+    offset = (randomBall.value - 1) * 45;
+    let bearing = -Math.PI * (initialBearing.value - offset) / 180;
     board.mesh.rotation.z = bearing;
     beetle.balls.forEach(ball => ball.mesh.rotation.z = -bearing);
 }
 
 initialBearing.addEventListener("input", _ => rotateBoard());
+randomBall.addEventListener("input", _ => rotateBoard())
 
-randomBall.addEventListener("input", ballNum => {
-    offset = (ballNum.target.value - 1) * 45;
-    bearing = initialBearing.value;
-    rotateBoard();
-})
-
-experiment.addEventListener("input", num => {
+experiment.addEventListener("input", _ => {
+    //change the shape of each ball depending on which experiment is being run
     switch (+experiment.value) {
         case 3:
             shapeA = 'sphere';
@@ -73,38 +70,34 @@ experiment.addEventListener("input", num => {
         ball.mesh.geometry.dispose();
         ball.mesh.material.dispose();
     });
-    beetle.balls = [];
-    beetle.ballShapes = [];
-    ballsInit();
+    ballsInit(shapeA, shapeB);
+    rotateBoard();
 })
 
 /**
  * Initialise position of dung balls in the scene
  */
-function ballsInit() {
+function ballsInit(shapeA, shapeB) {
     let r = Math.PI
     let id = 0;
-
     //initialise ball 0 to be north of the beetle.
     //place each subsequent ball 45 degrees apart from each other.
     //each ball is then offset by the initial bearing of the beetle
     for (let i = r; i > -r; i -= Math.PI / 4) {
-        let shape;
-        shape = id % 2 === 0 ? shapeA : shapeB
-        console.log(shape)
-        beetle.ballShapes.push(shape);
-        beetle.balls.push(new Ball(shape,
+        let shape = id % 2 === 0 ? shapeA : shapeB
+        beetle.ballShapes[id] = shape;
+        beetle.balls[id] = new Ball(shape,
             new THREE.Vector2(
-                Math.cos(i - Math.PI / 2 - bearing) * 300,
-                Math.sin(i - Math.PI / 2 - bearing) * 300), id));
+                Math.cos(i - Math.PI / 2) * RATIO*145,
+                Math.sin(i - Math.PI / 2) * RATIO*145), id);
         id++;
     }
-    beetle.balls.forEach(db => board.mesh.add(db.mesh))
+    beetle.balls.forEach(db => board.mesh.add(db.mesh));
 }
 
 
 function sceneInit() {
-    camera.zoom = 0.65;
+    camera.zoom = 0.9;
     camera.updateProjectionMatrix();
     scene.add(board.mesh);
     scene.add(beetle.mesh);
@@ -123,7 +116,7 @@ function sceneInit() {
             beetle.reset();
         }
     });
-    ballsInit();
+    ballsInit(shapeA, shapeB);
 }
 
 sceneInit();
