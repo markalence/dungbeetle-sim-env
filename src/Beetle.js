@@ -55,6 +55,9 @@ class Beetle {
         return mesh;
     }
 
+    /**
+     * Write the ground truth at each frame as well as states/actions at each frame to downloadable files
+     */
     writeFile() {
         this.stateActionPairs.unshift(JSON.stringify({shapes: this.ballShapes}) + '\n');
         this.balls.forEach(ball => {

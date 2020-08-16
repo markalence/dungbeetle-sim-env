@@ -1,5 +1,7 @@
 class EventListeners {
 
+    // this class manages all inputs
+    // listens to changes in initial bearing, ball at initial bearing, experiment number, and keyboard events
     constructor(param) {
         this.beetle = param.beetle;
         this.arena = param.arena;
@@ -12,21 +14,28 @@ class EventListeners {
         let offset = (this.randomBall.value - 1) * 45;
         let bearing = -Math.PI * (this.initialBearing.value - offset) / 180;
         this.arena.board.rotation.z = bearing;
-        console.log(this.arena.board);
         this.arena.balls.forEach(ball => ball.mesh.rotation.z = -bearing);
     }
 
+    /**
+     * Rotate the board when the initial bearing is changed
+     */
     activateBearingListener() {
         this.initialBearing.addEventListener("input", _ => this.rotateBoard());
     }
 
+    /**
+     * Rotate the board when the ball that is set to be at 'initialBearing' has changed
+     */
     activateBallListener() {
         this.randomBall.addEventListener("input", _ => this.rotateBoard())
     }
 
+    /**
+     * change shape of the balls depending on which experiment is being run
+     */
     activateExperimentListener() {
         this.experiment.addEventListener("input", _ => {
-            //change the shape of each ball depending on which experiment is being run
             let shapeA, shapeB;
             let shapeObj = {
                 3: ['sphere', 'cyla'],
@@ -50,6 +59,12 @@ class EventListeners {
         })
     }
 
+    /**
+     * Listens to keyboard inputs.
+     * 'r' resets the episode/demonstration
+     * Spacebar pauses demonstration
+     * Arrow keys are handled by the beetle class
+     */
     activateKeyboardListeners() {
         document.addEventListener("keydown", e => {
             //if r key is pressed, reset the beetle rotation and position. episode starts afresh

@@ -8,6 +8,9 @@ class Arena {
     ballShapes = [];
     board;
 
+    /**
+     * This class manages the circular board, its angle markers, the balls, as well as the recording/paused status
+     */
     constructor() {
         let geometry = new THREE.CircleGeometry(217.5 * global.RATIO, 64);
         let material = new THREE.MeshBasicMaterial({color: 0x855E42, transparent: true})
@@ -16,15 +19,18 @@ class Arena {
         this.placeBalls('sphere', 'sphere')
         this.paused = false;
         let options = {size: 30, x: 0.35 * window.innerWidth, y: 0.48 * window.innerHeight}
-        this.status = {RECORDING: this.createText('RECORDING', options), PAUSED: this.createText('PAUSED', options)};
+        this.status = {
+            RECORDING: this.createText('RECORDING', options),
+            PAUSED: this.createText('PAUSED', options)
+        };
         this.status.PAUSED.visible = false;
     }
 
     /**
      * @param str -> string to be rendered
      * @param options {size, x, y, rotation}
-     * x -> xposition
-     * y -> yposition
+     * x -> x position
+     * y -> y position
      * size -> size of text
      * rotation -> rotation of text
      * @returns {Mesh<TextGeometry, MeshBasicMaterial>}
@@ -46,12 +52,16 @@ class Arena {
         return text;
     }
 
+    /**
+     *initialise ball 0 to be north of the beetle.
+     *place each subsequent ball 45 degrees apart from each other.
+     *each ball is then offset by the initial bearing of the beetle.
+     * @param shapeA -> shape of all even numbered balls
+     * @param shapeB -> shape of all odd numbered balls
+     */
     placeBalls(shapeA, shapeB) {
         let r = Math.PI
         let id = 0;
-        //initialise ball 0 to be north of the beetle.
-        //place each subsequent ball 45 degrees apart from each other.
-        //each ball is then offset by the initial bearing of the beetle
         for (let i = r; i > -r; i -= Math.PI / 4) {
             let shape = id % 2 === 0 ? shapeA : shapeB
             this.ballShapes[id] = shape;
@@ -75,13 +85,18 @@ class Arena {
                 rotation: -Math.PI * (i) / 180,
                 size: 12
             }
-            let spaces = i === 0 ? '\n|' :
-                i > 0 && i < 100 ? '\n |' : '\n  |'
+            let spaces = i === 0 ? '\n|'
+                : i > 0 && i < 100 ? '\n |'
+                    : '\n  |'
             let marker = this.createText(i.toString() + spaces, options);
             this.markers.push(marker);
         }
     }
 
+    /**
+     * return the meshes of all balls and markers, as well as the board
+     * @returns {[]}
+     */
     getChildren() {
         let children = [];
         [this.board, this.status.RECORDING, this.status.PAUSED].forEach(item => children.push(item));
