@@ -7,9 +7,9 @@ let demonstrationId = document.getElementById('filename');
 class Beetle {
     mesh;
     keyHandler;
-    balls = [];
     visibleBalls = [];
     ballShapes = [];
+    balls = [];
     stateActionPairs;
     groundTruth;
     static AOV = Math.PI / 4; // angle of view
@@ -33,7 +33,6 @@ class Beetle {
         this.mesh.add(this.setFov())
         this.mesh.renderOrder = 999;
     }
-
 
     /**
      * initialize beetle field of view. This is a triangle
@@ -78,15 +77,15 @@ class Beetle {
         if (this.fileWritten) return;
         if (!this.episodeOver) {
             if (this.keyHandler['ArrowLeft']) this.mesh.rotation.z += 0.03;
+            if (this.keyHandler['ArrowRight']) this.mesh.rotation.z -= 0.03;
             if (this.keyHandler['ArrowUp']) this.mesh.translateY(1.67);
             if (this.keyHandler['ArrowDown']) this.mesh.translateY(-1.67);
-            if (this.keyHandler['ArrowRight']) this.mesh.rotation.z -= 0.03;
 
             //delete all key entries in keyHandler that are not left, right, or up
             Object.keys(this.keyHandler).forEach(key => {
                 if (key !== 'ArrowLeft'
-                    && key !== 'ArrowUp'
                     && key !== 'ArrowRight'
+                    && key !== 'ArrowUp'
                     && key !== 'ArrowDown') delete this.keyHandler[key];
                 else {
                     //start episode on first key press
@@ -124,8 +123,8 @@ class Beetle {
     /**
      * get the balls that are visible to the beetle
      */
-    getIntersections() {
-        this.balls.forEach(ball => {
+    getVisibleBalls(balls) {
+        balls.forEach(ball => {
             let dist = this.mesh.getWorldPosition(new Vector3()).distanceTo(ball.mesh.getWorldPosition(new Vector3()))
             let angle;
 
@@ -161,6 +160,8 @@ class Beetle {
             //if beetle touches ball, the episode is over
             if (dist < 20 + ball.radius) {
                 this.episodeOver = true
+                this.balls = balls;
+                this.balls.forEach(ball => this.ballShapes.push(ball.shape));
             }
         })
     }

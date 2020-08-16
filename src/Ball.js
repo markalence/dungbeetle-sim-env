@@ -4,7 +4,6 @@ import {Vector3} from "three";
 
 class Ball {
     mesh;
-
     constructor(shape, position, id) {
         this.shape = shape;
         this.id = id;
@@ -29,6 +28,7 @@ class Ball {
                     v1.set(33 * global.RATIO, -21 * global.RATIO, 0);
                     v2.set(-33 * global.RATIO, -21 * global.RATIO, 0);
                     v3.set(0, 21 * global.RATIO, 0);
+                    this.radius = 33*global.RATIO;
                     break;
                 case 'iwc':
                     v1.set(-33 * global.RATIO, 21 * global.RATIO, 0);
@@ -48,7 +48,7 @@ class Ball {
         let material = new THREE.MeshBasicMaterial({color: 'black', transparent: true});
         this.mesh = new THREE.Mesh(geometry, material);
         this.addTextToMesh(this.shape, 12, {x:true}, {y: 25.5*global.RATIO});
-        this.addTextToMesh(id.toString(), 15, {x: true, y:true});
+        this.addTextToMesh((id+1).toString(), 15, {x: true, y:true});
         this.mesh.position.set(this.position.x, this.position.y, 0);
     }
 
