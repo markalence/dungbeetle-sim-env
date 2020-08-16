@@ -34,40 +34,18 @@ initialBearing.addEventListener("input", _ => rotateBoard());
 randomBall.addEventListener("input", _ => rotateBoard())
 experiment.addEventListener("input", _ => {
     //change the shape of each ball depending on which experiment is being run
-    switch (+experiment.value) {
-        case 3:
-            shapeA = 'sphere';
-            shapeB = 'cyla';
-            break;
-        case 4:
-            shapeA = 'sphere';
-            shapeB = 'uwc';
-            break;
-        case 5:
-            shapeA = 'uwc';
-            shapeB = 'iwc';
-            break;
-        case 6:
-            shapeA = 'uwc';
-            shapeB = 'inc';
-            break;
-        case 9:
-            shapeA = 'cylc';
-            shapeB = 'cyle';
-            break;
-        case 10:
-            shapeA = 'cyld';
-            shapeB = 'cyle';
-            break;
-        case 11:
-            shapeA = 'cylb';
-            shapeB = 'cyld';
-            break;
-        case 12:
-            shapeA = 'cylc';
-            shapeB = 'cyld';
-            break;
+    let shapeObj = {
+        3: ['sphere', 'cyla'],
+        4: ['sphere', 'uwc'],
+        5: ['uwc', 'iwc'],
+        6: ['uwc', 'inc'],
+        9: ['cylc', 'cyle'],
+        10: ['cyld', 'cyle'],
+        11: ['cylb', 'cyld'],
+        12: ['cylc', 'cyld']
     }
+    shapeA = shapeObj[experiment.value][0];
+    shapeB = shapeObj[experiment.value][1];
     beetle.balls.forEach(ball => {
         board.mesh.remove(ball.mesh);
         ball.mesh.geometry.dispose();

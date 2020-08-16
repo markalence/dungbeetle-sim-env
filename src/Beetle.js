@@ -78,12 +78,16 @@ class Beetle {
         if (this.fileWritten) return;
         if (!this.episodeOver) {
             if (this.keyHandler['ArrowLeft']) this.mesh.rotation.z += 0.03;
-            if (this.keyHandler['ArrowUp']) this.mesh.translateY(1);
+            if (this.keyHandler['ArrowUp']) this.mesh.translateY(1.67);
+            if (this.keyHandler['ArrowDown']) this.mesh.translateY(-1.67);
             if (this.keyHandler['ArrowRight']) this.mesh.rotation.z -= 0.03;
 
             //delete all key entries in keyHandler that are not left, right, or up
             Object.keys(this.keyHandler).forEach(key => {
-                if (key !== 'ArrowLeft' && key !== 'ArrowUp' && key !== 'ArrowRight') delete this.keyHandler[key];
+                if (key !== 'ArrowLeft'
+                    && key !== 'ArrowUp'
+                    && key !== 'ArrowRight'
+                    && key !== 'ArrowDown') delete this.keyHandler[key];
                 else {
                     //start episode on first key press
                     if (!this.episodeStarted && this.keyHandler[key]) {
