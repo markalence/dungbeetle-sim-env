@@ -70,7 +70,6 @@ class Ball {
         text.position.set(centered.x ? -center.x : position.x, centered.y ? -center.y : position.y, 0);
         this.mesh.add(text);
     }
-
 }
 
 export default Ball
