@@ -1,7 +1,11 @@
 class EventListeners {
 
-    // this class manages all inputs
-    // listens to changes in initial bearing, ball at initial bearing, experiment number, and keyboard events
+    /**
+     * This class manages all inputs and
+     * listens to changes in initial bearing, ball at initial bearing, experiment number, and keyboard events.
+     * Requires the beetle as well as the arena to be passed into the param object
+     * @param param -> {Beetle, Arena}
+     */
     constructor(param) {
         this.beetle = param.beetle;
         this.arena = param.arena;
@@ -10,6 +14,9 @@ class EventListeners {
         this.experiment = document.getElementById('experiment');
     }
 
+    /**
+     * Rotate the board so that the selected ball is at the selected bearing
+     */
     rotateBoard() {
         let offset = (this.randomBall.value - 1) * 45;
         let bearing = -Math.PI * (this.initialBearing.value - offset) / 180;
@@ -25,14 +32,14 @@ class EventListeners {
     }
 
     /**
-     * Rotate the board when the ball that is set to be at 'initialBearing' has changed
+     * Rotate the board when the ball that is set to be at 'initialBearing' is changed
      */
     activateBallListener() {
         this.randomBall.addEventListener("input", _ => this.rotateBoard())
     }
 
     /**
-     * change shape of the balls depending on which experiment is being run
+     * Change shape of the balls depending on which experiment is being run
      */
     activateExperimentListener() {
         this.experiment.addEventListener("input", _ => {
@@ -61,14 +68,12 @@ class EventListeners {
 
     /**
      * Listens to keyboard inputs.
-     * 'r' resets the episode/demonstration
-     * Spacebar pauses demonstration
+     * 'r' resets the episode/demonstration, and sets beetle's position and rotation to 0.
+     * Space bar pauses/unpauses demonstration
      * Arrow keys are handled by the beetle class
      */
     activateKeyboardListeners() {
         document.addEventListener("keydown", e => {
-            //if r key is pressed, reset the beetle rotation and position. episode starts afresh
-            //if space key is pressed, pause the episode
             if (e.key === 'r') {
                 this.beetle.mesh.position.set(0, 0, 0);
                 this.beetle.mesh.rotation.z = 0;

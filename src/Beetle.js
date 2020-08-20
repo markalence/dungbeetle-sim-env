@@ -15,16 +15,9 @@ class Beetle {
     static AOV = Math.PI / 4; // angle of view
     static LOV = 450; // length of view
 
-    reset() {
-        this.keyHandler = {'ArrowUp': false, 'ArrowLeft': false, 'ArrowRight': false};
-        this.stateActionPairs = [];
-        this.groundTruth = [];
-        this.frame = 0;
-        this.episodeOver = false;
-        this.episodeStarted = false;
-        this.fileWritten = false;
-    }
-
+    /**
+     * This class manages the beetle, records its keystrokes, states, and actions.
+     */
     constructor() {
         this.reset();
         let geometry = new THREE.CircleGeometry(20, 64);
@@ -35,9 +28,23 @@ class Beetle {
     }
 
     /**
-     * initialize beetle field of view. This is a triangle
+     * Restart the episode. Clear all recorded states and actions
+     */
+    reset() {
+        this.keyHandler = {'ArrowUp': false, 'ArrowLeft': false, 'ArrowRight': false, 'ArrowDown': false};
+        this.stateActionPairs = [];
+        this.groundTruth = [];
+        this.ballShapes = [];
+        this.frame = 0;
+        this.episodeOver = false;
+        this.episodeStarted = false;
+        this.fileWritten = false;
+    }
+
+    /**
+     * Initialize beetle field of view. This is a triangle
      * originating at the center of the beetle and extending outwards
-     * at an angle of AOV. With the sides of length LOV
+     * at an angle of AOV with the sides of length LOV
      * @returns {Mesh<ShapeGeometry, MeshBasicMaterial>}
      */
     setFov() {
@@ -62,8 +69,9 @@ class Beetle {
         this.stateActionPairs.unshift(JSON.stringify({shapes: this.ballShapes}) + '\n');
         this.balls.forEach(ball => {
             this.groundTruth.unshift(JSON.stringify({
-                position: ball.mesh.position,
-                shape: ball.shape
+                position: ball.mesh.getWorldPosition(new Vector3()),
+                shape: ball.shape,
+                id: ball.id
             }) + '\n');
         })
         let stateActionBlob = new Blob(this.stateActionPairs, {type: 'application/json'});
@@ -124,7 +132,7 @@ class Beetle {
     }
 
     /**
-     * get the balls that are visible to the beetle
+     * Get the balls that are visible to the beetle
      */
     getVisibleBalls(balls) {
         balls.forEach(ball => {
@@ -154,16 +162,17 @@ class Beetle {
             //if the ball lies in the field of view triangle, it is visible to the beetle
             if ((Math.abs(angle) < Beetle.AOV + 0.01) && dist <= 25 + Beetle.LOV * Math.cos(Beetle.AOV) / Math.cos(angle)) {
                 ball.mesh.material.color.setHex(0xA9A9A9);
-                (this.visibleBalls)[ball.id] = {visible: true, distance: dist};
+                (this.visibleBalls)[ball.id] = {visible: true, distance: dist, angle: angle};
             } else {
                 ball.mesh.material.color.setHex(0x000);
-                this.visibleBalls[ball.id] = {visible: false, distance: dist};
+                this.visibleBalls[ball.id] = {visible: false, distance: dist, angle: angle};
             }
 
             //if beetle touches ball, the episode is over
             if (dist < 20 + ball.radius) {
                 this.episodeOver = true
                 this.balls = balls;
+                this.ballShapes = [];
                 this.balls.forEach(ball => this.ballShapes.push(ball.shape));
             }
         })

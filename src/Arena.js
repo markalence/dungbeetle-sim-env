@@ -28,7 +28,7 @@ class Arena {
 
     /**
      * @param str -> string to be rendered
-     * @param options {size, x, y, rotation}
+     * @param options -> {size, x, y, rotation}
      * x -> x position
      * y -> y position
      * size -> size of text
@@ -53,9 +53,9 @@ class Arena {
     }
 
     /**
-     *initialise ball 0 to be north of the beetle.
-     *place each subsequent ball 45 degrees apart from each other.
-     *each ball is then offset by the initial bearing of the beetle.
+     *Initialise ball 0 to be north of the beetle.
+     *Place each subsequent ball 45 degrees apart from each other.
+     *Each ball is then offset by the initial bearing of the beetle.
      * @param shapeA -> shape of all even numbered balls
      * @param shapeB -> shape of all odd numbered balls
      */
@@ -94,8 +94,7 @@ class Arena {
     }
 
     /**
-     * return the meshes of all balls and markers, as well as the board
-     * @returns {[]}
+     * @returns {[THREE.Mesh]} -> Markers meshes, status meshes, ball meshes, board mesh
      */
     getChildren() {
         let children = [];

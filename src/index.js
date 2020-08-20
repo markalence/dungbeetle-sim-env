@@ -3,7 +3,7 @@ import Beetle from './Beetle'
 import Arena from "./Arena";
 import EventListeners from "./EventListeners";
 
-global.RATIO = 25 / 21; //ratio between screen size and actual size
+global.RATIO = 25 / 21; //ratio between screen size and actual size in mm
 const HEIGHT = window.innerHeight;
 const WIDTH = window.innerWidth;
 const scene = new THREE.Scene();
