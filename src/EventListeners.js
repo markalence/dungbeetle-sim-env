@@ -4,14 +4,19 @@ class EventListeners {
      * This class manages all inputs and
      * listens to changes in initial bearing, ball at initial bearing, experiment number, and keyboard events.
      * Requires the beetle as well as the arena to be passed into the param object
-     * @param param -> {Beetle, Arena}
+     * @param param -> {Beetle, Arena, Playback}
      */
     constructor(param) {
+        this.playback = param.playback;
         this.beetle = param.beetle;
         this.arena = param.arena;
         this.initialBearing = document.getElementById('bearing');
         this.randomBall = document.getElementById('ball');
         this.experiment = document.getElementById('experiment');
+        this.experimentPlayback = document.getElementById('experimentPlayback');
+        this.beetlePlayback = document.getElementById('beetlePlayback');
+        this.playbackToggle = document.getElementById('toggle');
+        this.toggle = true;
     }
 
     /**
@@ -75,8 +80,6 @@ class EventListeners {
     activateKeyboardListeners() {
         document.addEventListener("keydown", e => {
             if (e.key === 'r') {
-                this.beetle.mesh.position.set(0, 0, 0);
-                this.beetle.mesh.rotation.z = 0;
                 this.beetle.reset();
                 this.beetle.keyHandler[e.key] = true
             } else if (e.key === ' ') {
@@ -95,6 +98,38 @@ class EventListeners {
         this.activateBallListener();
         this.activateExperimentListener();
         this.activateKeyboardListeners();
+        this.activatePlaybackListeners();
+    }
+
+
+    activatePlaybackListeners() {
+        [this.experimentPlayback, this.beetlePlayback].forEach(l => {
+            l.addEventListener("input", _ => {
+                this.playback.experiment = +this.experimentPlayback.value;
+                this.playback.beetleNum = +this.beetlePlayback.value;
+                if (0 < this.playback.beetleNum && this.playback.beetleNum < 20
+                    && [3, 4, 5, 6, 9, 10, 11, 12].includes(this.playback.experiment)) {
+                    this.beetle.reset();
+                    this.playback.readData();
+                    this.rotateBoard();
+                }
+            });
+        });
+    }
+
+    doToggle(){
+        this.toggle = !this.toggle;
+        document.getElementById('toggle').innerHTML = this.toggle ? 'Playback' : 'Recording'
+        document.getElementById('playbackid').style.display = this.toggle ? 'none' : 'block'
+        document.getElementById('labelid').style.display = this.toggle ? 'block' : 'none'
+    }
+    activateToggleListener(callback) {
+        this.doToggle();
+        callback();
+        this.playbackToggle.addEventListener("click", _ => {
+           this.doToggle();
+            callback();
+        });
     }
 }
 

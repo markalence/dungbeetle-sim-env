@@ -37,9 +37,9 @@ class Ball {
                     break;
                 case 'inc':
                     geometry = new THREE.Geometry()
-                    v1.set(-21 * RATIO, (33 - 8) * RATIO, 0);
-                    v2.set(21 * RATIO, (33 - 8) * RATIO, 0);
-                    v3.set(0, -(33 + 8) * RATIO, 0);
+                    v1.set(-21 * RATIO, 25 * RATIO, 0);
+                    v2.set(21 * RATIO, 25 * RATIO, 0);
+                    v3.set(0, -25 * RATIO, 0);
                     break;
             }
             [v1, v2, v3].forEach(v => geometry.vertices.push(v));

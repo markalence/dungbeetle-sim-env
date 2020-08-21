@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "dependencies": {
     "file-saver": "^1.3.2",
+    "jquery": "^3.5.1",
     "three": "^0.118.3"
   },
   "devDependencies": {

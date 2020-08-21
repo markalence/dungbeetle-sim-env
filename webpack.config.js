@@ -1,8 +1,8 @@
 const HtmlWebPackPlugin = require('html-webpack-plugin');
+const webpack = require("webpack");
 
 module.exports = {
     module: {
-
         rules: [
             {
                 test: /\.(png|svg|jpg|gif)$/,
@@ -31,6 +31,12 @@ module.exports = {
             template: './src/index.html',
             filename: './index.html'
         }),
+        new webpack.ProvidePlugin({
+            $: "jquery",
+            jQuery: "jquery"
+        }),
 
-    ]
+    ],
+    target: 'web'
+
 }

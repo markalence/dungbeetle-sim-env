@@ -6,7 +6,7 @@ let demonstrationId = document.getElementById('filename');
 
 class Beetle {
     mesh;
-    keyHandler;
+    keyHandler = {};
     visibleBalls = [];
     ballShapes = [];
     balls = [];
@@ -31,6 +31,10 @@ class Beetle {
      * Restart the episode. Clear all recorded states and actions
      */
     reset() {
+        if(this.mesh !== undefined) {
+            this.mesh.rotation.z = 0;
+            this.mesh.position.set(0, 0, 0);
+        }
         this.keyHandler = {'ArrowUp': false, 'ArrowLeft': false, 'ArrowRight': false, 'ArrowDown': false};
         this.stateActionPairs = [];
         this.groundTruth = [];
@@ -39,6 +43,7 @@ class Beetle {
         this.episodeOver = false;
         this.episodeStarted = false;
         this.fileWritten = false;
+        this.visibleBalls = [];
     }
 
     /**
